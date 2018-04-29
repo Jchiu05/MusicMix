@@ -71,8 +71,8 @@ int main()
 						#define FILE_NAME file
 
 						song = Mix_LoadMUS(FILE_NAME);
-						}	
-						break;
+					}	
+				break;
 
 					 case SDL_QUIT:
 						isRunning = false;
