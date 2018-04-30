@@ -1,47 +1,46 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include "SDLWindow.h"
 #include <string>
-#undef main
 
+#undef main
 #define FILE_NAME ""
+
 
 int main()
 {
+	char *file = new char[1000];
 
+	Mix_Music *song = NULL;
+	SDLWindow *window = NULL;
 
-    char file[1000];
+	window = new SDLWindow;
+
 	std::cout << "Please enter the path name to your song: ";
 	std::cin.getline(file, 1000);	
 
 	#undef FILE_NAME
 	#define FILE_NAME file
 
-
-	SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
-
-	Mix_Music* song;
-	SDL_Window* window;
-
-	window = SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOWEVENT);
-
-	Mix_OpenAudio(22096, MIX_DEFAULT_FORMAT, 2, 4096); //Initialize before using mixer functions
-	song = Mix_LoadMUS(FILE_NAME);
-
+	Mix_OpenAudio(22096, MIX_DEFAULT_FORMAT, 2, 4096);
+	song = Mix_LoadMUS(FILE_NAME); 
 
 	while(song == NULL)
 	{
 		std::cerr << "ERROR\n";
 		std::cerr << "Try again: ";
 		std::cin.getline(file, 1000);
+
 		#undef FILE_NAME
 		#define FILE_NAME file
+
 		song = Mix_LoadMUS(FILE_NAME);
 	}
 
 	bool isRunning = true;
 	SDL_Event event;
-
+	
 	while (isRunning == true)
 	{
 		while(SDL_PollEvent(&event))
@@ -57,8 +56,8 @@ int main()
 						else if(Mix_PausedMusic())
 							Mix_ResumeMusic();
 
-							else
-								Mix_PauseMusic();
+						else
+							Mix_PauseMusic();
 					}
 
 					else if(event.key.keysym.sym == SDLK_n) //Press n to change songs
@@ -74,15 +73,20 @@ int main()
 					}	
 				break;
 
-					 case SDL_QUIT:
-						isRunning = false;
+				case SDL_QUIT:
+					isRunning = false;
+				break;
 				}
-			}
-	}
+		}
+	} //end of isRunning loop
 
+	delete window;
+	delete [] file;
 	Mix_FreeMusic(song);
 	Mix_CloseAudio();
 	Mix_Quit();
-	SDL_Quit();
+	
 	return 0;
 }
+
+
